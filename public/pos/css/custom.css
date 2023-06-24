@@ -1,0 +1,81 @@
+/* Custom File Attachment */
+input.custom-input-attachment {
+	padding-right: 35px !important;
+}
+div.custom-input-attachment {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+}
+div.custom-input-attachment-with-label-top {
+	top: 35px;
+}
+div.custom-input-attachment.error-icon {
+	top: -4px;
+}
+.custom-input-attachment .attachment-icon, .custom-delete-btn-icon,
+.custom-input-attachment .password-show-icon,
+.custom-input-attachment .error-icon {
+	font-size: 24px;
+	color: #333;
+	display: inline;
+}
+.custom-input-attachment .password-show-icon.off {
+	color: #333;
+}
+.custom-input-attachment .attachment-icon.limit-full {
+	color: #333;
+}
+.custom-input-attachment .attached-files {
+	font-size: 18px;
+	vertical-align: text-bottom;
+	margin-right: 6px;
+	color: #333;
+}
+
+/* DATATABLE */
+table.dataTable tbody tr>.dtfc-fixed-left, table.dataTable tbody tr>.dtfc-fixed-right {
+    background-color: inherit !important;
+}
+
+/* MODAL */
+.colored-header .modal-content .modal-header {
+    padding: 5px 20px !important;
+}
+.colored-header .modal-content .modal-header .close {
+    color: rgb(255 255 255 / 100%) !important;
+    margin-top: -7px !important;
+}
+
+/* IMAGE UPLOAD PREVIEW */
+div.input-file div.file-action {
+    width: 100%;
+    height: 165px;
+}
+div.input-file img.picture-preview {
+    cursor: pointer;
+    position: absolute;
+    top: 8.5%;
+    left: 37.5%;
+}
+div.input-file img.picture-preview:hover + div.file-action-buttons {
+    display: block;
+}
+div.input-file div.file-action-buttons {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    top: 8.5%;
+    left: 37.5%;
+    background-color: rgb(0,0,0,0.75);
+    display: none;
+    cursor: pointer;
+}
+div.input-file div.file-action-buttons:hover {
+    display: block;
+    z-index: 1;
+}
+div.input-file div.file-action-buttons button {
+    position: relative;
+    top: 45%;
+}
