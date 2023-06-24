@@ -28,10 +28,10 @@
 
 @section('page_head')
     <div class="page-head">
-        <h2 class="page-head-title">Product Management</h2>
+        <h2 class="page-head-title">Billing Management</h2>
         <nav aria-label="breadcrumb" role="navigation">
             <ol class="breadcrumb page-head-nav">
-                <li class="breadcrumb-item active">Product</li>
+                <li class="breadcrumb-item active">Billing</li>
             </ol>
         </nav>
     </div>
@@ -46,10 +46,9 @@
                         @can('create-stock')
                             <div class="row m-0">
                                 <div class="col-md-12 p-2 text-right">
-                                    <button class="btn btn-space btn-primary btn-sm" data-toggle="modal"
-                                        data-target="#add-stock" type="button">
+                                    <a href="{{route('billing.create')}}" class="btn btn-space btn-primary btn-sm" type="button">
                                         <i class="icon icon-left mdi mdi-plus"></i>Add New
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         @endcan
@@ -76,175 +75,7 @@
             </div>
         </div>
     </div>
-    <input type="hidden" name="product_id" id="product_id" value="{{ $product_id }}">
     {{-- @dd($stock_units) --}}
-@endsection
-
-@section('modals')
-
-    @can('create-stock')
-        <!-- START OF ADD NEW STOCK MODAL -->
-        <div class="modal fade colored-header colored-header-primary" id="add-stock" tabindex="-1" role="dialog"
-            data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog">
-                <div class="modal-content be-loading">
-                    <form id="create-stock-validation" action="{{ route('product.store') }}">
-                        @csrf
-                        <div class="modal-header modal-header-colored">
-                            <h3 class="modal-title">Add New Product</h3>
-                            <button class="close md-close" type="button" data-dismiss="modal" aria-hidden="true"><span
-                                    class="mdi mdi-close"></span></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="text-center input-file">
-                                <div class="file-action">
-                                    <img class="rounded-circle mr-2 mb-2 picture-preview profile-picture"
-                                        src="{{ asset('pos/assets/img/140x140.png') }}" alt="Placeholder" width="140"
-                                        height="140">
-                                    <div class="rounded-circle mr-2 mb-2 file-action-buttons">
-                                        <button class="btn btn-space btn-primary btn-xs change-picture" type="button">
-                                            <i class="icon mdi mdi-edit"></i>
-                                        </button>
-                                        <button class="btn btn-space btn-danger btn-xs delete-picture" type="button">
-                                            <i class="icon mdi mdi-delete"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <input type="file" name="image" style="display: none;">
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Product Name</label>
-                                        <input class="form-control form-control-xs" type="text" name="name"
-                                            placeholder="Enter name">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 ">
-                                    <div class="form-group">
-                                        <label>Price</label>
-                                        <input class="form-control form-control-xs" type="number" name="price"
-                                            placeholder="Enter Price">
-                                    </div>
-                                </div>
-
-                                <div class="row w-100 mt-3">
-
-                                    <div class="col-12">
-                                        <i class="icon icon-left mdi mdi-plus plus plus_ingredient float-right"
-                                            onclick="add_more_ingreddients()"></i>
-                                    </div>
-                                </div>
-                                {{-- @dd($stock_units) --}}
-                                <div class="col-md-6  mt-3">
-                                    <div class="form-group">
-                                        <label>Ingredients</label>
-                                        <select name="stock[]" class="select2 select2-sm">
-                                            <option></option>
-                                            @foreach ($stock_units as $stock)
-                                                <option value="{{ $stock->id }}"><b>{{ $stock->name }} </b>
-                                                    (<sup class="unit_name">{{ $stock->unit_name }}</sup class="unit_name">)
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <div class="form-group">
-                                        <label>Quantity</label>
-                                        <input class="form-control form-control-xs" type="number" name="stock_quantity[]"
-                                            placeholder="Enter quantity">
-                                    </div>
-                                </div>
-                                <div class="add_ingredients"></div>
-                            </div>
-
-
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary md-close close" type="button" data-dismiss="modal">Close</button>
-                            <button class="btn btn-primary store-stock" type="button">Save</button>
-                        </div>
-                    </form>
-                    <div class="be-spinner">
-                        <svg width="40px" height="40px" viewBox="0 0 66 66" xmlns="http://-www.w3.org/2000/svg">
-                            <circle fill="none" stroke-width="4" stroke-linecap="round" cx="33" cy="33"
-                                r="30" class="circle"></circle>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- END OF ADD NEW STOCK MODAL -->
-    @endcan
-
-    @can('view-stock')
-        <!-- START OF VIEW product MODAL -->
-        <div class="modal fade colored-header colored-header-primary" id="view-stock" tabindex="-1" role="dialog"
-            data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog">
-                <div class="modal-content be-loading">
-                    <form>
-                        <div class="modal-header modal-header-colored">
-                            <h3 class="modal-title">View Product</h3>
-                            <button class="close md-close" type="button" data-dismiss="modal" aria-hidden="true"><span
-                                    class="mdi mdi-close"></span></button>
-                        </div>
-                        <div class="modal-body view_model">
-
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary md-close close" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                    <div class="be-spinner">
-                        <svg width="40px" height="40px" viewBox="0 0 66 66" xmlns="http://-www.w3.org/2000/svg">
-                            <circle fill="none" stroke-width="4" stroke-linecap="round" cx="33" cy="33"
-                                r="30" class="circle"></circle>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- END OF VIEW STOCK MODAL -->
-    @endcan
-
-    @can('update-stock')
-        <!-- START OF EDIT STOCK MODAL -->
-        <div class="modal fade colored-header colored-header-primary" id="edit-stock" tabindex="-1" role="dialog"
-            data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog">
-                <div class="modal-content be-loading">
-                    <form id="edit-stock-validation">
-                        <div class="modal-header modal-header-colored">
-                            <h3 class="modal-title">Edit Stock</h3>
-                            <button class="close md-close" type="button" data-dismiss="modal" aria-hidden="true"><span
-                                    class="mdi mdi-close"></span></button>
-                        </div>
-                        @can('delete-stock')
-                            <div class="btn-group btn-group-justified btn-space" role="group">
-                                <a class="btn btn-danger delete" href="javascript:void(0)">Delete Stock</a>
-                            </div>
-                        @endcan
-                        <div class="modal-body edit_model">
-
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary md-close close" type="button" data-dismiss="modal">Close</button>
-                            <button class="btn btn-primary update-stock" type="button">Save</button>
-                        </div>
-                    </form>
-                    <div class="be-spinner">
-                        <svg width="40px" height="40px" viewBox="0 0 66 66" xmlns="http://-www.w3.org/2000/svg">
-                            <circle fill="none" stroke-width="4" stroke-linecap="round" cx="33" cy="33"
-                                r="30" class="circle"></circle>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- END OF EDIT STOCK MODAL -->
-    @endcan
 @endsection
 
 @section('page_level_scripts')
@@ -323,7 +154,7 @@
                 "serverSide": true,
                 "searchDelay": 1000,
                 "ajax": {
-                    "url": "{{ route('product.get') }}",
+                    "url": "",
                     "method": "POST",
                     'headers': {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'

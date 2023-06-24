@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\BillingManagement;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProductManagement;
 use Illuminate\Http\Request;
 use Spatie\FlareClient\View;
 
@@ -25,7 +26,8 @@ class BillingManagement extends Controller
      */
     public function create()
     {
-        //
+        $products=ProductManagement::all();
+        return view('billing_management.add_invoice', compact('products'));
     }
 
     /**

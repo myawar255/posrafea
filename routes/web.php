@@ -110,7 +110,7 @@ Route::get('product-management/product/{id}/delete_ingredient', [ProductManageme
 Route::get('product-management/product/{id}/delete_img', [ProductManagement::class, 'delete_img'])->name('product.delete_img');
 
 Route::resource('billing-management/billing', BillingManagement::class)->only([
-    'index', 'store', 'update', 'destroy'
+    'index','create' ,'store', 'update', 'destroy'
 ]);
 
 require __DIR__.'/auth.php';
