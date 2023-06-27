@@ -109,9 +109,7 @@ Route::post('product-management/product/{id}/edit', [ProductManagement::class, '
 Route::get('product-management/product/{id}/delete_ingredient', [ProductManagement::class, 'delete_ingredient'])->name('product.delete_ingredient');
 Route::get('product-management/product/{id}/delete_img', [ProductManagement::class, 'delete_img'])->name('product.delete_img');
 
-Route::resource('billing-management/billing', BillingManagement::class)->only([
-    'index','create' ,'store', 'update', 'destroy'
-]);
+Route::resource('billing-management/billing', BillingManagement::class);
 
 Route::get('billing-management/billing/add_more_products/{count?}', [BillingManagement::class, 'add_more_products'])->name('add_more_products');
 Route::post('get_billing', [BillingManagement::class, 'get_billing'])->name('get_billing');

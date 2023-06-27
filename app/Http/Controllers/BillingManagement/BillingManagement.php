@@ -110,7 +110,7 @@ class BillingManagement extends Controller
 
             $action = '<div class="btn-group">';
             if ($request->user()->can('view-stock')) {
-                $action .= '<button class="btn btn-space btn-info btn-sm view-stock" data-view-route="' . $data_view_route . '">
+                $action .= '<button class="btn btn-space btn-info btn-sm " data-toggle="modal" onclick="loadInvoice('.$record->id.')" data-target="#view-invoice" >
                              <i class="icon mdi mdi-eye"></i>
                          </button>';
             }
@@ -188,7 +188,9 @@ class BillingManagement extends Controller
      */
     public function show($id)
     {
-        //
+        $bill= BillingManagment::find($id);
+        $bill_products= ProductBilling::where('billing_management_id',$id)->get();
+        return view('billing_management.show_modal',compact('bill','bill_products'));
     }
 
     /**

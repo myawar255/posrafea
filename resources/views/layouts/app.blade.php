@@ -23,9 +23,9 @@
   <body>
         <div class="be-wrapper">
 
-            {{-- @include('partials.header') --}}
+            @include('partials.header')
 
-            {{-- @include('partials.sidebar') --}}
+            @include('partials.sidebar')
 
             <div class="be-content">
                 @yield('page_head')
