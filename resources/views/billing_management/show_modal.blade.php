@@ -145,13 +145,13 @@
             </thead>
             <tbody>
 
-                @foreach ($bill_products as $product)
+                @foreach ($bill_products as $key=> $product)
                     @php
                         $stock = App\Models\ProductManagement::where('id', $product->product_management_id)->first();
                         // dd($stock);
                     @endphp
                     <tr class="invoice-items">
-                        <td>02</td>
+                        <td>{{ $key+1 }}</td>
                         <td>{{ $stock->name }}</td>
                         <td>{{ $product->quantity }}</td>
                         <td style="text-align: right;">{{ $stock->price }}</td>

@@ -862,14 +862,14 @@
         }
 
 
-        function removeProduct(id) {
+        function removeInvoice(id) {
             console.log('id: ', id);
             $("#confirmation-dialog .confirmation-yes").unbind("click").on("click", function() {
                 var modal = $(this).closest("div.modal");
                 var form_data = new FormData();
                 form_data.append("_method", "DELETE");
-                var url = '{{ route('product.destroy', ':count') }}';
-                url = url.replace(':count', count);
+                var url = '{{ route('billing.destroy', ':id') }}';
+                url = url.replace(':id', id);
                 $.ajax({
                     /* the route pointing to the post function */
 

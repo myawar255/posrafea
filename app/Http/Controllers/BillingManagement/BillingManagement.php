@@ -121,7 +121,7 @@ class BillingManagement extends Controller
             }
             if ($request->user()->can('delete-stock')) {
                 $data_delete_route = route("stock.destroy", $record->id);
-                $action .= '<button class="btn btn-space btn-danger btn-sm delete" data-delete-route="' . $data_delete_route . '" >
+                $action .= '<button class="btn btn-space btn-danger btn-sm delete" onclick="removeInvoice(' . $record->id . ' )" data-toggle="modal" data-target="#confirmation-dialog">
                                  <i class="icon mdi mdi-delete"></i>
                              </button>';
             }
@@ -163,6 +163,12 @@ class BillingManagement extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->validate([
+            'product_id.*' => 'required',
+            'price.*' => 'required',
+            'product_quantity.*' => 'required',
+        ]);
         // dd($request->all());
         $bill = new BillingManagment();
         $bill->total = $request->total;
@@ -224,6 +230,10 @@ class BillingManagement extends Controller
      */
     public function destroy($id)
     {
-        //
+        // dd($id);
+        $invoice = BillingManagment::where('id',$id)->first();
+        ProductBilling::where('billing_management_id', $invoice->id)->delete();
+        $invoice->delete();
+        return 'Invoice Deleted Successfully';
     }
 }
