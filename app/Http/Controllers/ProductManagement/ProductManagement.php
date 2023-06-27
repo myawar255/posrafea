@@ -213,7 +213,7 @@ class ProductManagement extends Controller
      */
     public function store(Request $request)
     {
-        //    dd($request->all());
+        // dd($request->all());
         $image_rule = 'nullable|mimes:jpeg,png,jpg|max:1024'; // max 1024kb
         $request->validate([
             'name' => 'required',
@@ -384,14 +384,13 @@ class ProductManagement extends Controller
 
             foreach ($stocks as $key => $stock) {
                 if (!empty($stock) && !empty($quantity[$key])) {
-                ProductStock::create([
-                    'product_management_id' => $product->id,
-                    'stock_id' => $stock,
-                    'quantity' => $quantity[$key],
-                ]);
+                    ProductStock::create([
+                        'product_management_id' => $product->id,
+                        'stock_id' => $stock,
+                        'quantity' => $quantity[$key],
+                    ]);
+                }
             }
-            }
-
         }
 
 

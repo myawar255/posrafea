@@ -49,7 +49,7 @@
 
     <div class="container">
 
-        <form id="create-stock-validation" action="{{ route('product.store') }}">
+        <form method="POST" action="{{ route('billing.store') }}">
             @csrf
             <div class="row">
 
@@ -57,17 +57,17 @@
 
                     <div class="col-12">
                         <i class="icon icon-left mdi mdi-plus plus plus_ingredient float-right"
-                            onclick="add_more_ingreddients()"></i>
+                            onclick="add_more_products()"></i>
                     </div>
                 </div>
                 {{-- @dd($stock_units) --}}
                 <div class="col-md-4  mt-3">
                     <div class="form-group">
                         <label>Select Product </label>
-                        <select id="single" class="form-control" style="height: 40px">
+                        <select id="single" class="form-control product" name="product_id[]" style="height: 40px">
                             <option></option>
                             @foreach ($products as $product)
-                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                <option value="{{ $product->id }}-0">{{ $product->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -75,30 +75,31 @@
                 <div class="col-md-4 mt-3">
                     <div class="form-group">
                         <label>price</label>
-                        <input class="form-control form-control-xs" type="number" name="price[]" id="product_price"
+                        <input class="form-control form-control-xs price_0" type="number" name="price[]" id="product_price"
                             placeholder="Enter price" disabled style="height: 40px">
                     </div>
                 </div>
                 <div class="col-md-4 mt-3">
                     <div class="form-group">
                         <label>Quantity</label>
-                        <input class="form-control form-control-xs" type="number" name="product_quantity[]"
+                        <input class="form-control form-control-xs " onkeyup="QuantityKeyUp()" type="number" name="product_quantity[]"
                             placeholder="Enter quantity" style="height: 40px">
                     </div>
                 </div>
-                <div class="add_ingredients"></div>
+                <div class="add_products"></div>
 
                 <div class="col-md-4 mt-3">
                     <div class="form-group">
                         <label>Grand Total</label>
-                        <input class="form-control form-control-xs" type="number" name="product_quantity[]" style="height: 40px">
+                        <input class="form-control form-control-xs totalQTY" type="number" name="total"
+                            style="height: 40px">
                     </div>
                 </div>
             </div>
 
 
             <div class="modal-footer">
-                <button class="btn btn-primary store-stock" type="button">Save</button>
+                <button class="btn btn-primary store-stock" type="submit">Save</button>
             </div>
         </form>
     </div>
@@ -148,28 +149,42 @@
 
 
     <script>
-        $("#single").select2({
+        $(".product").select2({
             placeholder: "Select Your Product",
             allowClear: true
         });
 
-        $('#single').change(function() {
-            const selectedProductId = parseInt($(this).val());
-            const priceInput = $('#product_price');
+        $(document).on('change', '.product', function() {
+            // $('.product').change(function() {
+            const rawselectedProductId = $(this).val();
+            console.log('rawselectedProductId: ', rawselectedProductId);
+            var splitString = rawselectedProductId.split('-');
+
+            // Retrieve the name and value from the splitString array
+            var selectedProductId = splitString[0];
+            var counter = splitString[1];
+            const priceInput = $(`.price_${counter}`);
             const productData = {!! json_encode($products) !!};
 
-            const selectedProduct = productData.find(product => product.id === selectedProductId);
+            const selectedProduct = productData.find(product => product.id == selectedProductId);
+            console.log('selectedProduct: ', selectedProduct);
             if (selectedProduct) {
                 priceInput.val(selectedProduct.price);
             } else {
                 priceInput.val('');
             }
+            calculatePrice()
         });
+
+        function QuantityKeyUp() {
+            console.log("aawdwad");
+            calculatePrice()
+        }
+
         var count = 1;
-
-        function add_more_ingreddients() {
+        function add_more_products() {
             count++;
-            var url = '{{ route('add_more_ingredients', ':count') }}';
+            var url = '{{ route('add_more_products', ':count') }}';
             url = url.replace(':count', count);
 
             $.ajax({
@@ -180,118 +195,36 @@
                 },
                 success: function(data) {
 
-                    $('.add_ingredients').append(data)
-
+                    $('.add_products').append(data)
+                    $(".product").select2()
                 },
             });
         }
 
-        function add_ingreddients() {
-            count++;
-            var url = '{{ route('add_more_ingredients', ':count') }}';
-            url = url.replace(':count', count);
 
-            $.ajax({
-                type: 'GET',
-                url: url,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(data) {
+        function removeProductField(count) {
+            console.log('count: ', count);
+            $('.product_' + count).remove();
+            calculatePrice()
+        }
 
-                    $('.ingredients').append(data)
+        function calculatePrice() {
+            var price = $('[name="price\\[\\]"]');
+            var qty = $('[name="product_quantity\\[\\]"]');
+            var totalPrice = 0;
 
-                },
+            price.each(function(index) {
+                var priceValue = parseFloat($(this).val());
+                var qtyValue = parseFloat(qty.eq(index).val());
+
+                if (!isNaN(priceValue) && !isNaN(qtyValue)) {
+                    totalPrice += priceValue * qtyValue;
+                }
             });
+
+            console.log('Total Price: ', totalPrice);
+            $('.totalQTY').val(totalPrice)
         }
-
-        function removeClubField(count) {
-            $('.ingredient_' + count).remove();
-        }
-
-
-        function removeProduct(id) {
-            console.log('id: ', id);
-            $("#confirmation-dialog .confirmation-yes").unbind("click").on("click", function() {
-                var modal = $(this).closest("div.modal");
-                var form_data = new FormData();
-                form_data.append("_method", "DELETE");
-                var url = '{{ route('product.destroy', ':count') }}';
-                url = url.replace(':count', count);
-                $.ajax({
-                    /* the route pointing to the post function */
-
-                    url: url,
-                    type: 'POST',
-                    /* send the csrf-token and the input to the controller */
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    data: form_data,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function() {
-                        $(modal).find(".be-loading").addClass(
-                            "be-loading-active");
-                    },
-                    /* remind that 'data' is the response of the AjaxController */
-                    success: function(data) {
-                        $(modal).modal('hide');
-                        $.gritter.add({
-                            title: '',
-                            text: 'Stock successfully deleted',
-                            class_name: 'color success'
-                        });
-                        location.reload();
-
-                        $(modal).find(".be-loading").removeClass(
-                            "be-loading-active");
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        if (jqXHR.responseJSON.exception) {
-                            error_string = "Something went wrong";
-                            if (jqXHR.responseJSON.message != "") {
-                                error_string = jqXHR.responseJSON.message;
-                            }
-                            $.gritter.add({
-                                title: '',
-                                text: error_string,
-                                class_name: 'color danger'
-                            });
-                            setTimeout(() => {
-                                window.location.href =
-                                    "{{ route('dashboard') }}";
-                            }, reload_timeout);
-                        } else {
-                            $(modal).find(".be-loading").removeClass(
-                                "be-loading-active");
-                            var errors = jqXHR.responseJSON.errors;
-                            var errors_keys = Object.keys(errors);
-                            var error_values = Object.values(errors);
-                            var errors_string = "";
-                            for (i = 0; i < errors_keys.length; i++) {
-                                errors_string += (i + 1) + ". " + error_values[
-                                    i] + "<br>";
-                            }
-                            $.gritter.add({
-                                title: '',
-                                text: errors_string,
-                                class_name: 'color danger'
-                            });
-                        }
-                        //$(modal).modal('hide');
-                    }
-                });
-                $(this).closest("td").find("form.delete-form").submit();
-            });
-            $("#confirmation-dialog").modal("show");
-        }
-
-        $(".close").click(function() {
-            $('#add-stock').modal('hide')
-            $('#view-stock').modal('hide')
-            $('#edit-stock').modal('hide')
-        });
     </script>
 
 

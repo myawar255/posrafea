@@ -63,7 +63,6 @@
                                         </label>
                                     </th>
                                     <th>ID</th>
-                                    <th>Name</th>
                                     <th>Price</th>
                                     <th style="width:10%;"></th>
                                 </tr>
@@ -154,7 +153,7 @@
                 "serverSide": true,
                 "searchDelay": 1000,
                 "ajax": {
-                    "url": "",
+                    "url": "{{ route('get_billing') }}",
                     "method": "POST",
                     'headers': {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -168,9 +167,6 @@
                     },
                     {
                         "data": 'id'
-                    },
-                    {
-                        "data": 'name'
                     },
                     {
                         "data": 'price'
@@ -188,7 +184,7 @@
                 ],
                 "columnDefs": [{
                         "orderable": false,
-                        "targets": [0, 4]
+                        "targets": [0, 3]
                     },
                     {
                         "className": "select-checkbox",
